@@ -20,7 +20,8 @@ public class listActivity extends AppCompatActivity {
 
         ListView childList = findViewById(R.id.listSchedule);
         ArrayList children = new ArrayList<>(asList("Pedro", "Juan", "Leonardo", "Sebastian"));
-        ArrayAdapter<String> childAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 , children);
+        //ArrayAdapter<String> childAdapter = new ArrayAdapter<String>(this, R.layout.component , children);
+        childAdapter childAdapter = new childAdapter(this, children);
 
         childList.setAdapter(childAdapter);
         childList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
