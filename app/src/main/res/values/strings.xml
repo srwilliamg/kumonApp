@@ -10,5 +10,7 @@
     <string name="error_incorrect_password">Esta contraseña es incorrecta</string>
     <string name="error_field_required">Este campo es requerido</string>
     <string name="permission_rationale">"El permiso de contactos es necesario para autocompletar campos."</string>
-    <string name="token_message">"El token agregado es: "</string>
+    <string name="token_message">El token agregado es: </string>
+    <string name="channel_name">channel</string>
+    <string name="channel_description">Canal de notificaciones kumón</string>
 </resources>

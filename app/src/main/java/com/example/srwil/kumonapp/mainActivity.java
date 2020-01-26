@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.srwil.kumonapp.constants.GlobalVars;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -118,11 +119,12 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
 
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
+                        GlobalVars.setFbToken(token);
 
                         // Log and toast
                         String msg = R.string.token_message + token;
                         Log.d(TAG, msg);
-                        Toast.makeText(mainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -156,6 +158,7 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
         }
         return false;
     }
+
 
     /**
      * Callback received when a permissions request has been completed.
