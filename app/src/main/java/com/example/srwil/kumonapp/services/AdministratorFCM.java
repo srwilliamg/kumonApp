@@ -1,20 +1,23 @@
-package com.example.srwil.kumonapp.Classes;
+package com.example.srwil.kumonapp.services;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.example.srwil.kumonapp.R;
+import com.example.srwil.kumonapp.classes.NotificationID;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-public class AdministratorFMS extends FirebaseMessagingService {
+public class AdministratorFCM extends FirebaseMessagingService {
     private NotificationManagerCompat notificationManager;
-    private static final String TAG = "AdministratorFMS";
+    private static final String TAG = "AdministratorFCM";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -66,7 +69,7 @@ public class AdministratorFMS extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "1")
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "1")
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_notify_message)
                 .setContentTitle(title)
@@ -75,9 +78,14 @@ public class AdministratorFMS extends FirebaseMessagingService {
                 //.setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE) //Important for heads-up notification
                 .setPriority(Notification.PRIORITY_MAX); //Important for heads-up notification
 
-        Notification buildNotification = mBuilder.build();
-        NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(NotificationID.getID(), buildNotification);
+        Intent intent = new Intent(getApplicationContext(), com.example.srwil.kumonapp.mainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        notificationBuilder.setContentIntent(pendingIntent);
+
+        Notification builtNotification = notificationBuilder.build();
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(NotificationID.getID(), builtNotification);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.srwil.kumonapp.Classes;
+package com.example.srwil.kumonapp.classes;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

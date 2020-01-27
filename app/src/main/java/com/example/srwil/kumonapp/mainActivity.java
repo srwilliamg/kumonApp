@@ -35,11 +35,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.srwil.kumonapp.classes.RequestQueueInstance;
+import com.example.srwil.kumonapp.classes.Utilities;
 import com.example.srwil.kumonapp.constants.GlobalVars;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,28 +64,17 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world", "srwilliamg@gmail.com:123456"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private String TAG = "PRUEBA";
+    private String TAG = "mainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        RequestQueueInstance.getInstance(getApplicationContext());
         setContentView(R.layout.activity_main);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -108,25 +105,7 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
         mProgressView = findViewById(R.id.login_progress);
         getSupportActionBar().hide();
 
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
 
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        GlobalVars.setFbToken(token);
-
-                        // Log and toast
-                        String msg = R.string.token_message + token;
-                        Log.d(TAG, msg);
-                        //Toast.makeText(mainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     private void populateAutoComplete() {
@@ -180,9 +159,6 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -221,8 +197,60 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+
+            String url = GlobalVars.getUrlTest()+"auth/logIn";
+
+            try {
+
+                Utilities.getFirebaseToken();
+
+                JSONObject jsonobject = new JSONObject();
+                jsonobject.put("email", email);
+                jsonobject.put("password", password);
+                jsonobject.put("token", GlobalVars.getFcmToken());
+
+                Log.i(TAG, jsonobject.toString()+"; send to: "+url);
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonobject, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.i(TAG, response.toString());
+
+                        try {
+                            GlobalVars.setJwtToken(response.getString("token"));
+                            GlobalVars.setName(response.getString("name"));
+                            GlobalVars.setEmail(response.getString("email"));
+                        } catch (JSONException e) {
+                            Log.e(TAG, e.toString());
+                            e.printStackTrace();
+                        }
+
+                        showProgress(false);
+
+                        Intent myIntent = new Intent(mainActivity.this, listActivity.class);
+                        startActivityForResult(myIntent, 0);
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showProgress(false);
+
+                        Log.e(TAG, error.getMessage());
+                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        mPasswordView.requestFocus();
+
+                    }
+                });
+
+                RequestQueueInstance.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
+            }
+
         }
     }
     private boolean isEmailValid(String email) {
@@ -332,73 +360,5 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
                     .getApplicationWindowToken(), 0);
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-
-
-                for (String credential : DUMMY_CREDENTIALS) {
-                    String[] pieces = credential.split(":");
-                    if (pieces[0].equals(mEmail)) {
-                        // Account exists, return true if the password matches.
-                        return pieces[1].equals(mPassword);
-                    }
-                }
-
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-                return false;
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                Intent myIntent = new Intent(mainActivity.this, listActivity.class);
-                startActivityForResult(myIntent, 0);
-
-                Toast.makeText(mainActivity.this,"Sucessful", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(mainActivity.this,"Unsucessful", Toast.LENGTH_SHORT).show();
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
 }
 
