@@ -14,13 +14,14 @@
     android:weightSum="3"
     tools:context=".mainActivity">
 
-    <EditText
-        android:id="@+id/editText"
+    <TextView
+        android:id="@+id/title_list_child"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="20"
         android:inputType="textPersonName"
-        android:text="Name list" />
+        android:text="Lista de tus niños"
+        android:textSize="24sp" />
 
     <ListView
         android:id="@+id/listSchedule"

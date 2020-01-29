@@ -71,7 +71,7 @@ public class AdministratorFCM extends FirebaseMessagingService {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "1")
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setSmallIcon(R.drawable.ic_notify_message)
+                .setSmallIcon(R.drawable.ic_kumon_bar)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setWhen(System.currentTimeMillis())

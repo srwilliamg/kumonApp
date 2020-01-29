@@ -39,6 +39,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -215,37 +216,46 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        Log.i(TAG, response.toString());
-
                         try {
-                            GlobalVars.setJwtToken(response.getString("token"));
-                            GlobalVars.setName(response.getString("name"));
-                            GlobalVars.setEmail(response.getString("email"));
+                            Log.i(TAG, response.toString());
+
+                            if(response.has("code")){
+                                mPasswordView.setError(response.getString("message"));
+                                mPasswordView.requestFocus();
+                            }
+                            else{
+                                    GlobalVars.setJwtToken(response.getString("token"));
+                                    GlobalVars.setName(response.getString("name"));
+                                    GlobalVars.setEmail(response.getString("email"));
+                                    GlobalVars.setIdParent(response.getString("idparent"));
+
+
+                                Intent myIntent = new Intent(mainActivity.this, listActivity.class);
+                                startActivityForResult(myIntent, 0);
+                            }
+
                         } catch (JSONException e) {
                             Log.e(TAG, e.toString());
                             e.printStackTrace();
                         }
-
-                        showProgress(false);
-
-                        Intent myIntent = new Intent(mainActivity.this, listActivity.class);
-                        startActivityForResult(myIntent, 0);
 
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        showProgress(false);
 
-                        Log.e(TAG, error.getMessage());
-                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        Log.e(TAG, error.toString());
+                        VolleyLog.d(TAG, error.getMessage());
+                        mPasswordView.setError(getString(R.string.conection_error));
                         mPasswordView.requestFocus();
 
                     }
                 });
 
                 RequestQueueInstance.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+                showProgress(false);
+
             } catch (JSONException e) {
                 e.printStackTrace();
                 Log.e(TAG, e.getMessage());
