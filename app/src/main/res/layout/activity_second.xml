@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:ems="20"
         android:inputType="textPersonName"
-        android:text="Lista de tus niños"
+        android:padding="5dp"
+        android:text="Niños asociados a"
         android:textSize="24sp" />
 
     <ListView

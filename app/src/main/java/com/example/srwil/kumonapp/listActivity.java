@@ -53,6 +53,7 @@ public class listActivity extends AppCompatActivity {
                         ListView childList = findViewById(R.id.listSchedule);
                         ArrayList names = new ArrayList<>();
                         ArrayList lastnames = new ArrayList<>();
+                        ArrayList urlImages = new ArrayList<>();
 
                         Log.i(TAG, response.toString());
                         JSONObject currentElement = null;
@@ -61,9 +62,9 @@ public class listActivity extends AppCompatActivity {
                             currentElement = response.getJSONObject(i);
                             names.add(currentElement.getJSONObject("son").getString("name"));
                             lastnames.add(currentElement.getJSONObject("son").getString("lastname"));
+                            urlImages.add(currentElement.getJSONObject("son").getString("image_url"));
                         }
-                        //ArrayAdapter<String> childAdapter = new ArrayAdapter<String>(this, R.layout.component , children);
-                        childAdapter childAdapter = new childAdapter(getApplicationContext(), names, lastnames);
+                        childAdapter childAdapter = new childAdapter(getApplicationContext(), names, lastnames, urlImages);
 
                         childList.setAdapter(childAdapter);
                         childList.setOnItemClickListener(new AdapterView.OnItemClickListener(){

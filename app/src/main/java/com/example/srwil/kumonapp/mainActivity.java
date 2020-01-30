@@ -78,10 +78,10 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
         RequestQueueInstance.getInstance(getApplicationContext());
         setContentView(R.layout.activity_main);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -93,7 +93,7 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -224,10 +224,11 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
                                 mPasswordView.requestFocus();
                             }
                             else{
-                                    GlobalVars.setJwtToken(response.getString("token"));
-                                    GlobalVars.setName(response.getString("name"));
-                                    GlobalVars.setEmail(response.getString("email"));
-                                    GlobalVars.setIdParent(response.getString("idparent"));
+
+                                GlobalVars.setJwtToken(response.getString("token"));
+                                GlobalVars.setName(response.getString("name"));
+                                GlobalVars.setEmail(response.getString("email"));
+                                GlobalVars.setIdParent(response.getString("idparent"));
 
 
                                 Intent myIntent = new Intent(mainActivity.this, listActivity.class);
@@ -239,6 +240,8 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
                             e.printStackTrace();
                         }
 
+                        showProgress(false);
+
                     }
                 }, new Response.ErrorListener() {
 
@@ -249,12 +252,13 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
                         VolleyLog.d(TAG, error.getMessage());
                         mPasswordView.setError(getString(R.string.conection_error));
                         mPasswordView.requestFocus();
+                        showProgress(false);
 
                     }
                 });
 
                 RequestQueueInstance.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
-                showProgress(false);
+                showProgress(true);
 
             } catch (JSONException e) {
                 e.printStackTrace();

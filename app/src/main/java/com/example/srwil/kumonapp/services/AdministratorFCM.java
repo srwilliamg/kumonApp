@@ -16,13 +16,10 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class AdministratorFCM extends FirebaseMessagingService {
-    private NotificationManagerCompat notificationManager;
     private static final String TAG = "AdministratorFCM";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        notificationManager = NotificationManagerCompat.from(this);
-
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());

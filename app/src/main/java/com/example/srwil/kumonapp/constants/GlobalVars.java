@@ -11,6 +11,7 @@ public class GlobalVars {
     private static String name;
     private static String fcmToken;
     private static String urlTest = "https://kumonserver.herokuapp.com/api/";//"http://192.168.0.3:5000/api/"; //
+    private static String urlAssets = "https://kumonserver.herokuapp.com/";//"http://192.168.0.3:5000/api/"; //
     private static String jwtToken;
     private static Context mainContext;
 
@@ -56,6 +57,14 @@ public class GlobalVars {
 
     public static void setJwtToken(String jwtToken) {
         GlobalVars.jwtToken = jwtToken;
+    }
+
+    public static String getUrlAssets() {
+        return urlAssets;
+    }
+
+    public static void setUrlAssets(String urlAssets) {
+        GlobalVars.urlAssets = urlAssets;
     }
 
     static GlobalVars getInstance() {
