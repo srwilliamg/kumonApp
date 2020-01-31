@@ -16,7 +16,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -33,16 +32,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.srwil.kumonapp.classes.RequestQueueInstance;
 import com.example.srwil.kumonapp.classes.Utilities;
 import com.example.srwil.kumonapp.constants.GlobalVars;
@@ -77,6 +72,8 @@ public class mainActivity extends AppCompatActivity implements LoaderCallbacks<C
         super.onCreate(savedInstanceState);
         RequestQueueInstance.getInstance(getApplicationContext());
         setContentView(R.layout.activity_main);
+
+        GlobalVars.setMainContext(mainActivity.this);
         // Set up the login form.
         mEmailView = findViewById(R.id.email);
         populateAutoComplete();

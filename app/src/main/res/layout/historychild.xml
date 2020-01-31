@@ -21,11 +21,19 @@
         android:ems="20"
         android:inputType="textPersonName"
         android:padding="5dp"
-        android:text="Niños asociados a"
+        android:text="Historial asistencia de "
         android:textSize="24sp" />
 
+    <ProgressBar
+        android:id="@+id/history_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
     <ListView
-        android:id="@+id/listChildren"
+        android:id="@+id/listSchedule"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

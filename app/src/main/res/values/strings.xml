@@ -14,4 +14,6 @@
     <string name="channel_name">channel</string>
     <string name="channel_description">Canal de notificaciones kumón</string>
     <string name="conection_error">Ha ocurrido un error al conectar.</string>
+    <string name="child_list">Kumón: lista de niños</string>
+    <string name="history_child">Kumón: horario</string>
 </resources>

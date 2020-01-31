@@ -1,5 +1,6 @@
 package com.example.srwil.kumonapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -7,22 +8,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.example.srwil.kumonapp.adapters.childAdapter;
 import com.example.srwil.kumonapp.classes.CustomJsonArrayRequest;
 import com.example.srwil.kumonapp.classes.RequestQueueInstance;
 import com.example.srwil.kumonapp.constants.GlobalVars;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,42 +40,35 @@ public class listActivity extends AppCompatActivity {
         try {
             jsonobject.put("idparent", GlobalVars.getIdParent());
 
-
             Log.i(TAG, jsonobject.toString()+"; send to: "+url);
 
                 CustomJsonArrayRequest jsonObjectRequest = new CustomJsonArrayRequest(Request.Method.POST, url, jsonobject, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
-                    try {
-                        TextView listTitle = findViewById(R.id.title_list_child);
-                        listTitle.setText(listTitle.getText()+" "+GlobalVars.getName());
-                        ListView childList = findViewById(R.id.listSchedule);
-                        ArrayList names = new ArrayList<>();
-                        ArrayList lastnames = new ArrayList<>();
-                        ArrayList urlImages = new ArrayList<>();
+                    TextView listTitle = findViewById(R.id.title_list_child);
+                    listTitle.setText(listTitle.getText()+" "+GlobalVars.getName());
+                    ListView childList = findViewById(R.id.listChildren);
 
-                        Log.i(TAG, response.toString());
-                        JSONObject currentElement = null;
+                    Log.i(TAG, response.toString());
 
-                        for (int i = 0; i < response.length() ; i++) {
-                            currentElement = response.getJSONObject(i);
-                            names.add(currentElement.getJSONObject("son").getString("name"));
-                            lastnames.add(currentElement.getJSONObject("son").getString("lastname"));
-                            urlImages.add(currentElement.getJSONObject("son").getString("image_url"));
-                        }
-                        childAdapter childAdapter = new childAdapter(getApplicationContext(), names, lastnames, urlImages);
+                    childAdapter childAdapter = new childAdapter(getApplicationContext(), response);
 
-                        childList.setAdapter(childAdapter);
-                        childList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Toast.makeText(getApplicationContext(), "Clicked", Toast.LENGTH_SHORT).show();
+                    childList.setAdapter(childAdapter);
+                    childList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            try {
+                                Intent seeChildHistory = new Intent(GlobalVars.getMainContext(), childHistory.class);
+                                // send data to activity
+                                seeChildHistory.putExtra("son", (String)view.getTag());
+                                startActivityForResult(seeChildHistory, 0);
                             }
-                        });
+                            catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    });
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
                 }
             }, new Response.ErrorListener() {
 
