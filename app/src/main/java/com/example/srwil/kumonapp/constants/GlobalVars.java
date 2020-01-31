@@ -10,8 +10,12 @@ public class GlobalVars {
     private static String email;
     private static String name;
     private static String fcmToken;
-    private static String urlTest = "https://kumonserver.herokuapp.com/api/";//"http://192.168.0.3:5000/api/"; //
-    private static String urlAssets = "https://kumonserver.herokuapp.com/";//"http://192.168.0.3:5000/api/"; //
+    private static String urlTest =
+            "https://kumonserver.herokuapp.com/api/";
+//            "http://192.168.0.3:5000/api/";
+    private static String urlAssets =
+                    "https://kumonserver.herokuapp.com/";
+//                    "http://192.168.0.3:5000/api/";
     private static String jwtToken;
     private static Context mainContext;
 
@@ -47,10 +51,6 @@ public class GlobalVars {
         GlobalVars.idParent = idParent;
     }
 
-    public static String getUrlTest() {
-        return urlTest;
-    }
-
     public static String getJwtToken() {
         return jwtToken;
     }
@@ -58,6 +58,12 @@ public class GlobalVars {
     public static void setJwtToken(String jwtToken) {
         GlobalVars.jwtToken = jwtToken;
     }
+
+    public static String getUrlTest() {
+        return urlTest;
+    }
+
+    public static void setUrlTest(String urlTest) { GlobalVars.urlTest = urlTest; }
 
     public static String getUrlAssets() {
         return urlAssets;

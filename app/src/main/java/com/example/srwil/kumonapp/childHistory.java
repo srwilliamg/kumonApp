@@ -23,6 +23,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.srwil.kumonapp.classes.CustomJsonArrayRequest;
 import com.example.srwil.kumonapp.classes.RequestQueueInstance;
+import com.example.srwil.kumonapp.classes.Utilities;
 import com.example.srwil.kumonapp.constants.GlobalVars;
 
 import org.json.JSONArray;
@@ -30,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,7 +78,8 @@ public class childHistory extends AppCompatActivity {
                     ArrayList<String> temp = new ArrayList<>();
                     for (int i = 0; i < response.length(); i++){
                         try {
-                            temp.add(response.getJSONObject(i).getString("createdAt"));
+                            String hour = Utilities.getDateStringFromDateTime(response.getJSONObject(i).getString("createdAt"));
+                            temp.add(hour);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

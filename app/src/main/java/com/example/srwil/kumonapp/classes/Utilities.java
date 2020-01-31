@@ -10,6 +10,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
+
 public class Utilities {
     public static String TAG;
 
@@ -32,5 +39,17 @@ public class Utilities {
                     Log.i(TAG, msg);
                 }
             });
+    }
+
+    public static String getDateStringFromDateTime(String dateString) {
+    String formattedDate = dateString;
+        DateTimeFormatter inputFormatter = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyy", Locale.ENGLISH);
+            LocalDate date = LocalDate.parse(dateString, inputFormatter);
+            formattedDate = outputFormatter.format(date);
+        }
+        return formattedDate;
     }
 }
